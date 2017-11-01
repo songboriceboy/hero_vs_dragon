@@ -21,12 +21,13 @@
 <canvas id="me" width="600" height="750">
 
 </canvas>
-</canvas>
-<canvas id="hb" width="600" height="750">
+
+
 <p></p>
 <script>
     var canvas = document.getElementById("background");
     var context2D = canvas.getContext("2d");
+
     var pic = new Image();
     pic.src = "imgs/background.png";
     //注意目录结构，这里是把图片和html放在一个目录的
@@ -62,11 +63,13 @@
     var hero = {
         speed: 10, // 每秒移动的像素
         x: 300,//初始x坐标
-        y: 450//初始y坐标
+        y: 700,//初始y坐标
+        width:40,
+        height:46
     };
     function Go() {
 //        update();
-        update(isCollsionWithTRBL(hero.x,hero.y,40,46,0,600,750,0));
+        update();
         draw2();//重绘屏幕
     }
 
@@ -80,54 +83,52 @@
     addEventListener("keyup", function (e) {
         delete keysDown[e.keyCode];
     }, false);
-    var cvsheroball = document.getElementById("hb");
-    var contexthb2D = cvsheroball.getContext("2d");
-    function update(c) {
-        if (c!=1&&38 in keysDown) { // 用户按的是↑
+
+    function update() {
+
+        if (38 in keysDown&&!isCollsionWithT()) { // 用户按的是↑
             hero.y -= hero.speed;
         }
-        if (c!=3&&40 in keysDown) { // 用户按的是↓
+        if (40 in keysDown&&!isCollsionWithB()) { // 用户按的是↓
             hero.y += hero.speed;
         }
-        if (c!=4&&37 in keysDown) { // 用户按的是←
+        if (37 in keysDown&&!isCollsionWithL()) { // 用户按的是←
             hero.x -= hero.speed;
         }
-        if (c!=2&&39 in keysDown) { // 用户按的是→
+        if (39 in keysDown&&!isCollsionWithR()) { // 用户按的是→
             hero.x += hero.speed;
         }
-        if (17 in keysDown) { // 用户按的是ctrl
-            var x=hero.x;var y=hero.y;
-            var hb = new Image();
-            hb.src = "imgs/missileH_U.gif";
-//            var btime=0;
-            setInterval(function(){
-                y-=3;
-                hbGo(x,y,hb);
-            },20);
-            function draw3(x,y,hb) {
-                contexthb2D.clearRect(0, 0, 600, 750);
-                contexthb2D.drawImage(hb, 0,0,40,46,x,y,40,46);
 
-
-            }
-            function hbGo(x,y,hb) {
-                draw3(x,y,hb);
-            }
-
-        }
     }
-    function isCollsionWithTRBL(x, y, width, height, top, right, bottom, left) {
-        if (x <=left) {
-            return 4;
-        } else if (y<=top) {
+    function isCollsionWithT() {
+
+        if (hero.y<=0) {
             return 1;
-        } else if (x+width>=right) {
-            return 2;
-        } else if (y+height>bottom) {
-            return 3;
         }
         return 0;
     }
+    function isCollsionWithB() {
+
+        if (hero.y+hero.height>750) {
+            return 1;
+        }
+        return 0;
+    }
+    function isCollsionWithL() {
+
+        if (hero.x <=0) {
+            return 1;
+        }
+        return 0;
+    }
+    function isCollsionWithR() {
+
+       if (hero.x+hero.width>=600) {
+            return 1;
+        }
+        return 0;
+    }
+
     function isCollsionWithRect(x1, y1, w1, h1, x2, y2, w2, h2) {
         // 矩形A位于矩形B的右侧
         if (x1 >= x2 && x1 >= x2 + w2) {
